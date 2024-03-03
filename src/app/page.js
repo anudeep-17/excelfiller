@@ -1,8 +1,9 @@
+import Excelreader from "@/Component/Excelwork/Excelreader";
 
 export default function Home() {
   return (
     <div>
-      excel filler
+      <Excelreader excelsheet_name = "../Component/210HWFeedbackTemplate.xlsx" />
     </div>
   );
 }
