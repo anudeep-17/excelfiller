@@ -14,7 +14,7 @@ const Excelreader = () => {
   const [Sheets, setSheets] = useState([]);
   const [SelectedSheet, setSelectedSheet] = useState(null);
   const [Filecontent, setFileContent] = useState([]);
-  const [EditRange, setEditRange] = useState({ start: { row: 1, col: 1 }, end: { row: 10, col: 10 } });
+  const [EditRange, setEditRange] = useState({ start: { row: 1, col: 1 }, end: { row: 10, col: 10 } }); 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
