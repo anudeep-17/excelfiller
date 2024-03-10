@@ -15,7 +15,8 @@ const Excelreader = () => {
   const [SelectedSheet, setSelectedSheet] = useState(null);
   const [Filecontent, setFileContent] = useState([]);
   const [EditRange, setEditRange] = useState({ start: { row: 1, col: 1 }, end: { row: 10, col: 10 } }); 
-
+  const [SaveAs, setSaveAs] = useState('');
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     GetWorkoBookDetails(file);
@@ -70,7 +71,7 @@ const Excelreader = () => {
     const newWorkbook = XLSX.utils.book_new();
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
-    XLSX.writeFile(newWorkbook, `Modified_${SelectedSheet}.xlsx`);
+    XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
   };
 
   const handleRangeChange = (e, type, index) => {
@@ -131,19 +132,22 @@ const Excelreader = () => {
       </FormControl>
 
       {SelectedSheet && (
-        <div>
-          <h3>Selected Sheet: {SelectedSheet}</h3>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignContent:'start',
+            justifyContent: 'start',
+            marginTop: 2,
+          }}
+        >
+          <Typography variant='h2'>
+            Selected Sheet: {SelectedSheet}
+          </Typography>
+          {/* Colum stuff */}
+
           <FormControl sx={{ width: '100px', marginBottom: 2 }}>
-            <InputLabel htmlFor="start-row">Start Row</InputLabel>
-            <TextField
-              id="start-row"
-              type="number"
-              value={EditRange.start.row}
-              onChange={(e) => handleRangeChange(e, 'start', 'row')}
-            />
-          </FormControl>
-          <FormControl sx={{ width: '100px', marginBottom: 2 }}>
-            <InputLabel htmlFor="start-col">Start Column</InputLabel>
+            <Typography variant="h6">From Column</Typography>
             <TextField
               id="start-col"
               type="number"
@@ -152,39 +156,42 @@ const Excelreader = () => {
             />
           </FormControl>
           <FormControl sx={{ width: '100px', marginBottom: 2 }}>
-            <InputLabel htmlFor="end-row">End Row</InputLabel>
+            <Typography variant="h6">To Column</Typography>
             <TextField
-              id="end-row"
-              type="number"
-              value={EditRange.end.row}
-              onChange={(e) => handleRangeChange(e, 'end', 'row')}
-            />
-          </FormControl>
-          <FormControl sx={{ width: '100px', marginBottom: 2 }}>
-            <InputLabel htmlFor="end-col">End Column</InputLabel>
-            <TextField
-              id="end-col"
+              id="start-col"
               type="number"
               value={EditRange.end.col}
               onChange={(e) => handleRangeChange(e, 'end', 'col')}
             />
           </FormControl>
+
+
+          {/* Row stuff */}
+          <FormControl sx={{ width: '100', marginBottom: 2 }}>
+            <Typography variant="h6">From Row</Typography>
+            <TextField
+              id="start-row"
+              type="number"
+              value={EditRange.start.row}
+              onChange={(e) => handleRangeChange(e, 'start', 'row')}
+            />
+          </FormControl>
+          <FormControl sx={{ width: '100', marginBottom: 2 }}>
+            <Typography variant="h6">To Row</Typography>
+            <TextField
+              id="start-row"
+              type="number"
+              value={EditRange.end.row}
+              onChange={(e) => handleRangeChange(e, 'end', 'row')}
+            />
+          </FormControl>
+
           <table border="1">
             <tbody>
-              {Filecontent.map((row, rowIndex) => (
+              {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => (
                 <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td
-                      key={cellIndex}
-                      contentEditable={
-                        rowIndex >= EditRange.start.row &&
-                        rowIndex <= EditRange.end.row &&
-                        cellIndex >= EditRange.start.col &&
-                        cellIndex <= EditRange.end.col
-                      }
-                      suppressContentEditableWarning
-                      onBlur={(e) => handleCellEdit(e, rowIndex, cellIndex)}
-                    >
+                  {row.slice(EditRange.start.col, EditRange.end.col + 1).map((cell, cellIndex) => (
+                    <td key={cellIndex}>
                       {cell}
                     </td>
                   ))}
@@ -192,6 +199,23 @@ const Excelreader = () => {
               ))}
             </tbody>
           </table>
+          
+          <Typography variant="h6" sx={{ marginTop: 2 }}>
+            Enter how you want the file to be saved
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 2,
+            }}
+          >
+            <Typography variant="h6">Save the file as</Typography>
+            <TextField id="outlined-basic" label="Save the file as" variant="outlined" onChange={(e) => setSaveAs(e.target.value)} />
+          </Box>
+
           <Button
             variant="contained"
             onClick={handleSaveExcel}
@@ -199,7 +223,7 @@ const Excelreader = () => {
           >
             Save Excel
           </Button>
-        </div>
+        </Box>
       )}
     </Box>
   );
