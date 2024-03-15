@@ -72,6 +72,7 @@ const Excelreader = () => {
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
     XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
+    
   };
 
   const handleRangeChange = (e, type, index) => {
