@@ -42,7 +42,7 @@ const Excelreader = () => {
     const sheetName = e.target.value;
     setSelectedSheet(sheetName);
     // Reset the edit range when a new sheet is selected
-    setEditRange({ start: { row: 1, col: 1 }, end: { row: 10, col: 10 } });
+    setEditRange({ start: { row: 9, col: 0 }, end: { row: 90, col: 10 } });
     ParseSelectedSheet(sheetName);
   };
 
@@ -187,19 +187,63 @@ const Excelreader = () => {
           </FormControl>
 
           <table border="1">
-            <tbody>
-              {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => (
+          <tbody>
+            {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => {
+              console.log(row); // Move the console.log() here
+              return (
                 <tr key={rowIndex}>
-                  {row.slice(EditRange.start.col, EditRange.end.col + 1).map((cell, cellIndex) => (
-                    <td key={cellIndex}>
+                  {/* {row.slice(EditRange.start.col, EditRange.end.col + 1).map((cell, cellIndex) => (
+                    <td
+                      key={cellIndex}
+                      contentEditable
+                      onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, cellIndex + EditRange.start.col)}
+                    >
                       {cell}
                     </td>
-                  ))}
+                  ))} */}
+                  <td
+                    key={rowIndex}
+                    contentEditable
+                    onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, 0)}
+                  >
+                    {row[0]}
+                  </td>
+
+                  <td
+                    key={rowIndex}
+                    contentEditable
+                    onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, 1)}
+                  >
+                    {row[1]}
+                  </td>
+                  <td
+                    key={rowIndex}
+                    contentEditable
+                    onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, 2)}
+                  >
+                    {row[2]}
+                  </td>
+                  <td
+                    key={rowIndex}
+                    contentEditable
+                    onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, 3)}  
+                  >
+                    {row[3]}
+                  </td>
+                  <td
+                    key={rowIndex}
+                    contentEditable
+                    onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, 4)}  
+                  >
+                    {row[4]}
+                  </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          
+              );
+            })}
+          </tbody>
+        </table>
+
+
           <Typography variant="h6" sx={{ marginTop: 2 }}>
             Enter how you want the file to be saved
           </Typography>
