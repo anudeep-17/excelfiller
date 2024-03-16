@@ -34,7 +34,7 @@ const Excelreader = () => {
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
-      return;
+      setOpen(false);
     }
   
     setOpen(false);
@@ -59,6 +59,7 @@ const Excelreader = () => {
   const handleSheetSelect = (e) => {
     const sheetName = e.target.value;
     setSelectedSheet(sheetName);
+    console.log(sheetName);
     // Reset the edit range when a new sheet is selected
     setEditRange({ start: { row: 0, col: 0 }, end: { row: 90, col: 10 } });
     ParseSelectedSheet(sheetName);
@@ -91,6 +92,7 @@ const Excelreader = () => {
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
     XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
+    setOpen(true);
   };
 
   const handleRangeChange = (e, type, index) => {
