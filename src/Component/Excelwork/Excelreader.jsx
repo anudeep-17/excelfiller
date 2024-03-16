@@ -12,6 +12,7 @@ import Fab from '@mui/material/Fab';
 import CachedIcon from '@mui/icons-material/Cached';
 
 const Excelreader = () => {
+  const [fileName, setFileName] = useState('');
   const [Workbook, setWorkbook] = useState({});
   const [Sheets, setSheets] = useState([]);
   const [SelectedSheet, setSelectedSheet] = useState(null);
@@ -22,6 +23,7 @@ const Excelreader = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setFileName(file.name);
     GetWorkoBookDetails(file);
   };
 
@@ -122,9 +124,26 @@ const Excelreader = () => {
         style={{ display: 'none' }}
       />
       <label htmlFor="file-upload">
-        <Button variant="contained" component="span" sx={{ marginTop: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignContent : 'center',
+            justifyContent: 'center',
+            padding: 2,
+            cursor: 'pointer',
+            marginTop: 2 
+          }}
+        >
+         <Button variant="contained" component="span">
           Upload file
         </Button>
+        <Typography variant="h6" sx={{ marginLeft: 2}}>
+          {fileName? fileName: 'No file selected'}
+        </Typography>
+        </Box> 
+       
       </label>
 
       <FormControl sx={{ width: 800, m: 2 }}>
