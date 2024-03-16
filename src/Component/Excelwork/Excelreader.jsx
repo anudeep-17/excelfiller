@@ -23,21 +23,32 @@ const Excelreader = () => {
   const [EditRange, setEditRange] = useState({ start: { row: 0, col: 0 }, end: { row: 10, col: 10 } }); 
   const [SaveAs, setSaveAs] = useState('');
   const [OriginalFilecontent, setOriginalFilecontent] = useState([]);
-  const [open, setOpen] = useState(false);
+  
+  // snackbar openers
+  const [open_forupload, setOpen_forUpload] = useState(false);
+  const [open_forSave, setOpen_forSave] = useState(false);
+  const [open_forReload, setOpen_forReload] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setFileName(file.name);
     GetWorkoBookDetails(file);
-    setOpen(true);
+    setOpen_forUpload(true);
   };
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
-      setOpen(false);
+      return;
     }
-  
-    setOpen(false);
+    if(open_forupload){
+      setOpen_forUpload(false);
+    }
+    if(open_forSave){
+      setOpen_forSave(false);
+    }
+    if(open_forReload){
+      setOpen_forReload(false);
+    }
   };
 
   const GetWorkoBookDetails = (file) => {
@@ -92,7 +103,7 @@ const Excelreader = () => {
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
     XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
-    setOpen(true);
+    setOpen_forSave(true);
   };
 
   const handleRangeChange = (e, type, index) => {
@@ -108,6 +119,7 @@ const Excelreader = () => {
   const ReloadSheet = () => {
     setFileContent(JSON.parse(JSON.stringify(OriginalFilecontent)));
     setOriginalFilecontent(JSON.parse(JSON.stringify(OriginalFilecontent)));
+    setOpen_forReload(true);
   }
 
  
@@ -125,11 +137,11 @@ const Excelreader = () => {
       }}
     >
 
-    <Snackbar open={open} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-          File Upoad successful please select the sheet you want to edit
-        </Alert>
-    </Snackbar>
+      <Snackbar open={open_forupload} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+            File Upoad successful please select the sheet you want to edit
+          </Alert>
+      </Snackbar>
 
       <Typography variant="h3" sx={{ marginBottom: 2 }}>
         Excel Auto Filler
@@ -140,6 +152,12 @@ const Excelreader = () => {
         Reload the Sheet 
       </Fab>
       
+      <Snackbar open={open_forReload} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+            File Reload Successful
+          </Alert>
+      </Snackbar> 
+
       <input
         accept=".xls,.xlsx"
         id="file-upload"
@@ -293,7 +311,7 @@ const Excelreader = () => {
             Save Excel
           </Button>
 
-          <Snackbar open={open} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Snackbar open={open_forSave} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
               <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
                 File Saved Successfully, Check Your Downloads
               </Alert>
