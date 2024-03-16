@@ -41,6 +41,10 @@ npm run dev
 
 Contributions are welcome! You can contribute to the project by reporting issues, submitting pull requests, or suggesting new features.
 
+## Future of the Project
+
+This project will be converted into an npm package and will be published soon. Stay tuned for updates!
+
 ## License
 
 This project is licensed under the MIT License.
