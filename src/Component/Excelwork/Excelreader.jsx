@@ -147,10 +147,10 @@ const Excelreader = () => {
         Excel Auto Filler
       </Typography>
 
-      <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '20px', right: '20px' }} onClick={ReloadSheet}>
+      {Filecontent && Filecontent.length > 0 ? <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '20px', right: '20px' }} onClick={ReloadSheet}>
         <CachedIcon sx={{ mr: 1 }} />
         Reload the Sheet 
-      </Fab>
+      </Fab>: null}
       
       <Snackbar open={open_forReload} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
