@@ -14,9 +14,11 @@ const Excelreader = () => {
   const [Sheets, setSheets] = useState([]);
   const [SelectedSheet, setSelectedSheet] = useState(null);
   const [Filecontent, setFileContent] = useState([]);
-  const [EditRange, setEditRange] = useState({ start: { row: 1, col: 1 }, end: { row: 10, col: 10 } }); 
+  const [Filecontentcopy, setFileContentCopy] = useState([]);
+  const [EditRange, setEditRange] = useState({ start: { row: 0, col: 0 }, end: { row: 10, col: 10 } }); 
   const [SaveAs, setSaveAs] = useState('');
-  
+
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     GetWorkoBookDetails(file);
@@ -42,7 +44,7 @@ const Excelreader = () => {
     const sheetName = e.target.value;
     setSelectedSheet(sheetName);
     // Reset the edit range when a new sheet is selected
-    setEditRange({ start: { row: 9, col: 0 }, end: { row: 90, col: 10 } });
+    setEditRange({ start: { row: 0, col: 0 }, end: { row: 90, col: 10 } });
     ParseSelectedSheet(sheetName);
   };
 
@@ -72,7 +74,7 @@ const Excelreader = () => {
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
     XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
-    
+    setFileContent(Filecontentcopy);
   };
 
   const handleRangeChange = (e, type, index) => {
@@ -187,25 +189,50 @@ const Excelreader = () => {
             />
           </FormControl>
 
-          <table border="1">
-            <tbody>
-              {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => {
-                return (
-                  <tr key={rowIndex}>
-                    {row.slice(EditRange.start.col, EditRange.end.col + 1).map((cell, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        contentEditable
-                        onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, cellIndex + EditRange.start.col)}
-                      >
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+{/* 
+        <table border="1">
+          <tbody>
+            {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => {
+              console.log(row);
+              return (
+                <tr key={rowIndex}>
+                  {Array.from({ length: row.length }).map((_, cellIndex) => (
+                    <td
+                      key={cellIndex}
+                      contentEditable
+                      onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, cellIndex + EditRange.start.col)}
+                    >
+                      {row[cellIndex] !== null ? row[cellIndex] : ''}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table> */}
+
+        <table border="1">
+          <tbody>
+            {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => {
+              console.log(row);
+              return (
+                <tr key={rowIndex}>
+                  {Array.from({ length: EditRange.end.col - EditRange.start.col + 1 }).map((_, cellIndex) => (
+                    <td
+                      key={cellIndex}
+                      contentEditable
+                      onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, cellIndex + EditRange.start.col)}
+                    >
+                      {row[cellIndex + EditRange.start.col] !== null ? row[cellIndex + EditRange.start.col] : ''}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        
 
 
           <Typography variant="h6" sx={{ marginTop: 2 }}>
