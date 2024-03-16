@@ -28,7 +28,7 @@ To set up the project locally, follow these steps:
 git clone https://github.com/anudeep-17/excelfiller.git
 
 # Navigate to the project directory
-cd excel-auto-filler
+cd excelfiller
 
 # Install dependencies
 npm install
