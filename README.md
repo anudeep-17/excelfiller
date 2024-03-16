@@ -1,6 +1,6 @@
 # Excel Auto Filler
 
-Excel Auto Filler is a web application that allows users to upload Excel files, edit the data, and save the changes back to the file. It's built with React and Material-UI, and uses the `xlsx` library to read and write Excel files.
+Excel Auto Filler is a web application that allows users to upload Excel files, edit the data, and save the changes back to the file. It's built with NextJS and Material-UI, and uses the `xlsx` library to read and write Excel files.
 
 ## Features
 
