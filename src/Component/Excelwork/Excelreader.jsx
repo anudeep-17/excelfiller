@@ -10,6 +10,9 @@ import TextField from '@mui/material/TextField';
 import * as XLSX from 'xlsx';
 import Fab from '@mui/material/Fab';
 import CachedIcon from '@mui/icons-material/Cached';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
+import Snackbar from '@mui/material/Snackbar';
 
 const Excelreader = () => {
   const [fileName, setFileName] = useState('');
@@ -20,11 +23,21 @@ const Excelreader = () => {
   const [EditRange, setEditRange] = useState({ start: { row: 0, col: 0 }, end: { row: 10, col: 10 } }); 
   const [SaveAs, setSaveAs] = useState('');
   const [OriginalFilecontent, setOriginalFilecontent] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setFileName(file.name);
     GetWorkoBookDetails(file);
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+  
+    setOpen(false);
   };
 
   const GetWorkoBookDetails = (file) => {
@@ -95,6 +108,9 @@ const Excelreader = () => {
     setOriginalFilecontent(JSON.parse(JSON.stringify(OriginalFilecontent)));
   }
 
+ 
+
+
   return (
     <Box
       sx={{
@@ -106,6 +122,13 @@ const Excelreader = () => {
         '& > :not(style)': { m: 1 } 
       }}
     >
+
+    <Snackbar open={open} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          File Upoad successful please select the sheet you want to edit
+        </Alert>
+    </Snackbar>
+
       <Typography variant="h3" sx={{ marginBottom: 2 }}>
         Excel Auto Filler
       </Typography>
@@ -267,6 +290,14 @@ const Excelreader = () => {
           >
             Save Excel
           </Button>
+
+          <Snackbar open={open} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+              <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                File Saved Successfully, Check Your Downloads
+              </Alert>
+          </Snackbar>
+
+
         </Box>
       )}
     </Box>
