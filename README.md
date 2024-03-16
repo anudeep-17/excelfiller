@@ -25,7 +25,7 @@ To set up the project locally, follow these steps:
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/anudeep-17/excelfiller.git
 
 # Navigate to the project directory
 cd excel-auto-filler
