@@ -8,16 +8,17 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import * as XLSX from 'xlsx';
+import Fab from '@mui/material/Fab';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const Excelreader = () => {
   const [Workbook, setWorkbook] = useState({});
   const [Sheets, setSheets] = useState([]);
   const [SelectedSheet, setSelectedSheet] = useState(null);
   const [Filecontent, setFileContent] = useState([]);
-  const [Filecontentcopy, setFileContentCopy] = useState([]);
   const [EditRange, setEditRange] = useState({ start: { row: 0, col: 0 }, end: { row: 10, col: 10 } }); 
   const [SaveAs, setSaveAs] = useState('');
-
+  const [OriginalFilecontent, setOriginalFilecontent] = useState([]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -52,6 +53,7 @@ const Excelreader = () => {
     const worksheet = Workbook.Sheets[sheetName];
     const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
     setFileContent(sheetData);
+    setOriginalFilecontent(JSON.parse(JSON.stringify(sheetData)));
   };
 
   const handleCellEdit = (e, rowIndex, cellIndex) => {
@@ -74,7 +76,6 @@ const Excelreader = () => {
     const newWorksheet = XLSX.utils.aoa_to_sheet(Filecontent);
     XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, SelectedSheet);
     XLSX.writeFile(newWorkbook, `${SaveAs}.xlsx`);
-    setFileContent(Filecontentcopy);
   };
 
   const handleRangeChange = (e, type, index) => {
@@ -87,6 +88,11 @@ const Excelreader = () => {
     setEditRange(newRange);
   };
 
+  const ReloadSheet = () => {
+    setFileContent(JSON.parse(JSON.stringify(OriginalFilecontent)));
+    setOriginalFilecontent(JSON.parse(JSON.stringify(OriginalFilecontent)));
+  }
+
   return (
     <Box
       sx={{
@@ -95,12 +101,18 @@ const Excelreader = () => {
         alignItems: 'center',
         justifyContent: 'start',
         height: '100vh',
+        '& > :not(style)': { m: 1 } 
       }}
     >
       <Typography variant="h3" sx={{ marginBottom: 2 }}>
         Excel Auto Filler
       </Typography>
 
+      <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '20px', right: '20px' }} onClick={ReloadSheet}>
+        <CachedIcon sx={{ mr: 1 }} />
+        Reload the Sheet 
+      </Fab>
+      
       <input
         accept=".xls,.xlsx"
         id="file-upload"
@@ -188,28 +200,6 @@ const Excelreader = () => {
               onChange={(e) => handleRangeChange(e, 'end', 'row')}
             />
           </FormControl>
-
-{/* 
-        <table border="1">
-          <tbody>
-            {Filecontent.slice(EditRange.start.row, EditRange.end.row + 1).map((row, rowIndex) => {
-              console.log(row);
-              return (
-                <tr key={rowIndex}>
-                  {Array.from({ length: row.length }).map((_, cellIndex) => (
-                    <td
-                      key={cellIndex}
-                      contentEditable
-                      onBlur={(e) => handleCellEdit(e, rowIndex + EditRange.start.row, cellIndex + EditRange.start.col)}
-                    >
-                      {row[cellIndex] !== null ? row[cellIndex] : ''}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table> */}
 
         <table border="1">
           <tbody>
