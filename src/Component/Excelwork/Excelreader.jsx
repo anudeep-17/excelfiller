@@ -13,6 +13,7 @@ import CachedIcon from '@mui/icons-material/Cached';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
 import Snackbar from '@mui/material/Snackbar';
+import AddIcon from '@mui/icons-material/Add';
 
 const Excelreader = () => {
   const [fileName, setFileName] = useState('');
@@ -23,6 +24,9 @@ const Excelreader = () => {
   const [EditRange, setEditRange] = useState({ start: { row: 0, col: 0 }, end: { row: 10, col: 10 } }); 
   const [SaveAs, setSaveAs] = useState('');
   const [OriginalFilecontent, setOriginalFilecontent] = useState([]);
+  
+  const [startRow, setStartRow] = useState(0);
+  const [endRow, setEndRow] = useState(0);
   
   // snackbar openers
   const [open_forupload, setOpen_forUpload] = useState(false);
@@ -120,10 +124,18 @@ const Excelreader = () => {
     setFileContent(JSON.parse(JSON.stringify(OriginalFilecontent)));
     setOriginalFilecontent(JSON.parse(JSON.stringify(OriginalFilecontent)));
     setOpen_forReload(true);
+    setSaveAs('');
   }
 
  
-
+  const calculateSum = (startRow, endRow, columnNumber) => {
+    let sum = 0;
+    for (let i = startRow; i <= endRow; i++) {
+      sum += Number(Filecontent[i][columnNumber] || 0);
+    } 
+    alert(`The sum is: ${sum} && The sum over 100: ${(sum/215)*100}`);
+ 
+  };
 
   return (
     <Box
@@ -151,6 +163,12 @@ const Excelreader = () => {
         <CachedIcon sx={{ mr: 1 }} />
         Reload the Sheet 
       </Fab>: null}
+
+      <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '80px', right: '20px'}} onClick={()=>{calculateSum(11,52,3)}}>
+        <AddIcon sx={{ mr: 1 }} />
+        Get Sum
+      </Fab>
+
       
       <Snackbar open={open_forReload} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
