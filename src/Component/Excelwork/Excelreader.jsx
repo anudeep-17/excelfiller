@@ -14,6 +14,7 @@ import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
 import Snackbar from '@mui/material/Snackbar';
 import AddIcon from '@mui/icons-material/Add';
+import copy from 'copy-to-clipboard';
 
 const Excelreader = () => {
   const [fileName, setFileName] = useState('');
@@ -32,6 +33,7 @@ const Excelreader = () => {
   const [open_forupload, setOpen_forUpload] = useState(false);
   const [open_forSave, setOpen_forSave] = useState(false);
   const [open_forReload, setOpen_forReload] = useState(false);
+  const [open_forcopy, setOpen_forcopy] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -52,6 +54,9 @@ const Excelreader = () => {
     }
     if(open_forReload){
       setOpen_forReload(false);
+    }
+    if(open_forcopy){
+      setOpen_forcopy(false);
     }
   };
 
@@ -126,14 +131,40 @@ const Excelreader = () => {
     setOpen_forReload(true);
     setSaveAs('');
   }
+  
+  const handleCopy = () => {
+    if (!Filecontent || Filecontent.length === 0) {
+      alert('No file content available');
+      return;
+    }
+  
+    let tableRows = [];
+    for (let i = EditRange.start.row; i <= EditRange.end.row; i++) {
+      if (!Filecontent[i]) {
+        continue;
+      }
+  
+      let tableCols = [];
+      for (let j = EditRange.start.col; j <= EditRange.end.col; j++) {
+        if (!Filecontent[i][j]) {
+          break;
+        }
+        tableCols.push(Filecontent[i][j]);
+      }
+      if (tableCols.length > 0) {
+        tableRows.push(tableCols.join('\t'));
+      }
+    }
+    copy(tableRows.join('\n'));
+  };
 
- 
+
   const calculateSum = (startRow, endRow, columnNumber) => {
     let sum = 0;
     for (let i = startRow; i <= endRow; i++) {
       sum += Number(Filecontent[i][columnNumber] || 0);
     } 
-    alert(`The sum is: ${sum} && The sum over 100: ${(sum/215)*100}`);
+    alert(`The sum is: ${sum} && The sum over 100: ${(sum/220)*100}`);
  
   };
 
@@ -164,12 +195,18 @@ const Excelreader = () => {
         Reload the Sheet 
       </Fab>: null}
 
-      <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '80px', right: '20px'}} onClick={()=>{calculateSum(11,52,3)}}>
-        <AddIcon sx={{ mr: 1 }} />
-        Get Sum
-      </Fab>
+        {Filecontent && Filecontent.length > 0 ? <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '80px', right: '20px'}} onClick={()=>{calculateSum(11,39,3)}}>
+          <AddIcon sx={{ mr: 1 }} />
+          Get Sum
+        </Fab>: null
+        }
 
-      
+      {Filecontent && Filecontent.length > 0 ? <Fab variant="extended" size="medium" color="primary" sx={{ position: 'fixed', bottom: '150px', right: '20px'}} onClick={handleCopy}>
+        <AddIcon sx={{ mr: 1 }} />
+        Copy to clipboard
+      </Fab>: null
+      }
+
       <Snackbar open={open_forReload} onClose={handleClose} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
             File Reload Successful
